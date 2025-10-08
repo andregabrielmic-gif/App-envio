@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Chamado</title>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Registrar Envio de Computador para T.I.</h1>
+        <a href="{{ url_for('index') }}">← Voltar para a Lista</a>
+        <hr>
+
+        <form method="POST" action="{{ url_for('novo') }}" enctype="multipart/form-data">
+            <div class="card">
+                <label for="responsavel_envio">Responsável pelo Envio:</label>
+                <input type="text" id="responsavel_envio" name="responsavel_envio" required>
+            </div>
+            
+            <div class="card">
+                <label>Checklist do Computador:</label>
+                <label style="font-weight: normal;"><input type="checkbox" name="checklist" value="Está ligando?"> Está ligando?</label><br>
+                <label style="font-weight: normal;"><input type="checkbox" name="checklist" value="Está carregando?"> Está carregando?</label><br>
+                <label style="font-weight: normal;"><input type="checkbox" name="checklist" value="Sem danos visíveis"> Sem danos visíveis</label><br>
+                <label style="font-weight: normal;"><input type="checkbox" name="checklist" value="HD/SSD ok"> HD/SSD ok</label><br>
+                <label style="font-weight: normal;"><input type="checkbox" name="checklist" value="Memória ok"> Memória ok</label><br>
+                <label style="font-weight: normal;"><input type="checkbox" name="checklist" value="Sistema operacional atualizado"> Sistema operacional atualizado</label><br>
+                <label style="font-weight: normal;"><input type="checkbox" name="checklist" value="Imagem ok"> Imagem ok</label><br>
+                <label style="font-weight: normal;"><input type="checkbox" name="checklist" value="Conexões ok"> Conexões ok</label><br>
+                <label style="font-weight: normal;"><input type="checkbox" name="checklist" value="Placa de rede OK"> Placa de rede OK</label><br>
+            </div>
+
+            <div class="card">
+                <label for="fotos">Fotos do Computador (pode enviar várias):</label>
+                <input type="file" id="fotos" name="fotos" accept="image/*" multiple>
+            </div>
+
+            <div class="card">
+                <label for="observacoes">Observações:</label>
+                <textarea id="observacoes" name="observacoes_envio" rows="3"></textarea>
+            </div>
+
+            <div class="card">
+                <label>Assinatura do Responsável:</label>
+                <canvas id="sigCanvas" style="border: 1px dashed #bbb; border-radius: 4px;"></canvas>
+                <input type="hidden" name="assinatura_base64" id="assinatura_base64">
+                <br><button type="button" id="clearBtn" style="background-color: #6c757d;">Limpar</button>
+            </div>
+            
+            <button type="submit" onclick="prepareAndSubmit(event)">Registrar Envio</button>
+        </form>
+    </div>
+    <script>
+      // O seu script do Signature Pad continua aqui, sem alterações.
+      const canvas = document.getElementById('sigCanvas');
+      const sigPad = new SignaturePad(canvas, { backgroundColor: 'rgb(255, 255, 255)' });
+      function resizeCanvas() {
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = 200 * ratio; // Altura fixa
+        canvas.getContext('2d').scale(ratio, ratio);
+        sigPad.clear();
+      }
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+      document.getElementById('clearBtn').addEventListener('click', () => sigPad.clear());
+      function prepareAndSubmit(event){
+        if (sigPad.isEmpty()){
+          if (!confirm('A assinatura está em branco. Deseja continuar?')) {
+            event.preventDefault();
+            return;
+          }
+        } else {
+          const dataUrl = sigPad.toDataURL('image/png');
+          document.getElementById('assinatura_base64').value = dataUrl;
+        }
+      }
+    </script>
+</body>
+</html>

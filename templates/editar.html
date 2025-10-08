@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Chamado</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Editar Chamado #{{ chamado.id }}</h1>
+        <a href="{{ url_for('index') }}">← Voltar para a Lista</a>
+        <hr>
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="card">
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="Em andamento" {% if chamado.status == 'Em andamento' %}selected{% endif %}>Em andamento</option>
+                    <option value="Concluído" {% if chamado.status == 'Concluído' %}selected{% endif %}>Concluído</option>
+                </select>
+            </div>
+            
+            <div class="card">
+                <label for="data_retorno">Data de Retorno:</label>
+                <input type="text" id="data_retorno" name="data_retorno" value="{{ chamado.data_retorno or '' }}" placeholder="Ex: DD/MM/AAAA">
+            </div>
+
+            <div class="card">
+                <label>Fotos Atuais:</label>
+                {% if chamado.fotos %}
+                    <div style="margin-top: 10px;">
+                    {% for foto in chamado.fotos.split(';') %}
+                        {% if foto %}
+                            <a href="{{ url_for('uploaded_file', filename=foto) }}" target="_blank">
+                                <img class="thumbnail" src="{{ url_for('uploaded_file', filename=foto) }}" alt="{{ foto }}">
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <p>Nenhuma foto anexada.</p>
+                {% endif %}
+                <hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">
+                
+                <label for="novas_fotos">Adicionar Novas Fotos:</label>
+                <input type="file" id="novas_fotos" name="novas_fotos" multiple>
+            </div>
+
+            <button type="submit">Salvar Alterações</button>
+        </form>
+    </div>
+</body>
+</html>

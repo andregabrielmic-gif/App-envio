@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Chamados</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Chamados</h1>
+        <a href="{{ url_for('novo') }}" class="button">➕ Novo Chamado</a>
+        <hr>
+
+        {% for c in chamados %}
+            <div class="card">
+                <h3>Chamado ID: {{ c.id }} <span style="float: right; font-size: 14px; font-weight: normal;">({{ c.status }})</span></h3>
+                <p><b>Responsável pelo Envio:</b> {{ c.responsavel_envio }}</p>
+                <p><b>Data de Envio:</b> {{ c.data_envio | localdatetime }}</p>
+                
+                <h4>Checklist:</h4>
+                <ul>
+                    {% for item in c.checklist.split('; ') %}{% if item %}<li>✔️ {{ item }}</li>{% endif %}{% endfor %}
+                </ul>
+
+                <p><b>Arquivos Anexados:</b></p>
+                {% for foto in c.fotos.split(';') %}
+                    {% if foto %}
+                        <a href="{{ url_for('uploaded_file', filename=foto) }}" target="_blank">
+                            <img class="thumbnail" src="{{ url_for('uploaded_file', filename=foto) }}" alt="{{ foto }}">
+                        </a>
+                    {% endif %}
+                {% endfor %}
+
+                <hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">
+<div style="display: flex; align-items: center; gap: 15px;">
+    
+    <a href="{{ url_for('editar', id=c.id) }}">✏️ Editar</a>
+    <a href="{{ url_for('gerar_pdf', id=c.id) }}">🧾 Gerar PDF</a>
+    
+    <form action="{{ url_for('excluir', id=c.id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este chamado? Esta ação não pode ser desfeita.');" style="margin: 0;">
+        <button type="submit" class="button-danger">🗑️ Excluir</button>
+    </form>
+    
+</div>
+            </div>
+        {% else %}
+            <div class="card">
+                <p>Nenhum chamado registrado ainda.</p>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
