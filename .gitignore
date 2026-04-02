@@ -1,0 +1,34 @@
+# Banco de dados
+*.db
+*.sqlite3
+
+# Pasta de uploads (imagens e assinaturas)
+uploads/
+
+# Cache do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ambiente virtual
+venv/
+.env/
+.env
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+
+# IDEs
+.vscode/
+.idea/
+
+# Arquivos de configuração sensíveis
+instance/
